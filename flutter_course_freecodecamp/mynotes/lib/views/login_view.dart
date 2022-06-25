@@ -2,36 +2,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/firebase_options.dart';
-import 'package:mynotes/views/login_view.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: const RegisterView());
-  }
-}
-
-class RegisterView extends StatefulWidget {
-  const RegisterView({Key? key}) : super(key: key);
+class LoginView extends StatefulWidget {
+  const LoginView({Key? key}) : super(key: key);
 
   @override
-  State<RegisterView> createState() => _RegisterViewState();
+  State<LoginView> createState() => _LoginViewState();
 }
 
-class _RegisterViewState extends State<RegisterView> {
+class _LoginViewState extends State<LoginView> {
   late final TextEditingController _email;
   late final TextEditingController _password;
 
@@ -52,7 +31,7 @@ class _RegisterViewState extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Register")),
+      appBar: AppBar(title: const Center(child: Text("Login"))),
       body: FutureBuilder(
         future: Firebase.initializeApp(
           options: DefaultFirebaseOptions.currentPlatform,
@@ -62,6 +41,7 @@ class _RegisterViewState extends State<RegisterView> {
             case ConnectionState.done:
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                //crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
                     margin:
@@ -99,27 +79,19 @@ class _RegisterViewState extends State<RegisterView> {
                       final password = _password.text;
                       try {
                         final userCredential = await FirebaseAuth.instance
-                            .createUserWithEmailAndPassword(
+                            .signInWithEmailAndPassword(
                                 email: email, password: password);
-                        debugPrint("\n\n$userCredential.toString()");
+                        debugPrint("\n\n${userCredential.toString()}");
                       } on FirebaseAuthException catch (e) {
-                        switch (e.code) {
-                          case 'email-already-in-use':
-                            debugPrint("Email is already in use");
-                            break;
-                          case 'invalid-email':
-                            debugPrint("Invalid Email Entered");
-                            break;
-                          case 'weak-password':
-                            debugPrint("Weak Password");
-                            break;
-                          default:
-                            debugPrint("Something happen");
-                            debugPrint(e.code);
+                        if (e.code == 'user-not-found') {
+                          debugPrint("User not found");
+                        } else if (e.code == 'wrong-password') {
+                          debugPrint("Something");
+                          debugPrint(e.code);
                         }
                       }
                     },
-                    child: const Text("Register"),
+                    child: const Text("Login"),
                   ),
                 ],
               );
