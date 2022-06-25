@@ -47,6 +47,7 @@ class HomePage extends StatelessWidget {
             if (user != null) {
               if (user.emailVerified) {
                 debugPrint("Email Verified");
+                return const NotesView();
               } else {
                 debugPrint("Email Not Verified");
                 return const VerifyEmailView();
@@ -54,10 +55,6 @@ class HomePage extends StatelessWidget {
             } else {
               return const LoginView();
             }
-            return Scaffold(
-              appBar: AppBar(title: const Text('Home')),
-              body: const Text('Done'),
-            );
           default:
             return const Scaffold(
               body: Center(
@@ -68,4 +65,83 @@ class HomePage extends StatelessWidget {
       },
     );
   }
+}
+
+enum MenuAction { logout }
+
+class NotesView extends StatefulWidget {
+  const NotesView({Key? key}) : super(key: key);
+
+  @override
+  State<NotesView> createState() => _NotesViewState();
+}
+
+class _NotesViewState extends State<NotesView> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Your notes'),
+        actions: [
+          PopupMenuButton<MenuAction>(
+            onSelected: (value) async {
+              switch (value) {
+                case MenuAction.logout:
+                  final shouldLogout = await showLogOutDialog(context);
+                  if (shouldLogout) {
+                    await FirebaseAuth.instance.signOut();
+                    // ignore: use_build_context_synchronously
+                    Navigator.of(context)
+                        .pushNamedAndRemoveUntil('/login/', (_) => false);
+                    debugPrint("Logout");
+                  } else {
+                    debugPrint("Not Logout");
+                  }
+                  break;
+                default:
+                  debugPrint("Default");
+              }
+            },
+            itemBuilder: (context) {
+              return const [
+                PopupMenuItem<MenuAction>(
+                  value: MenuAction.logout,
+                  child: Text('Log out'),
+                )
+              ];
+            },
+          ),
+        ],
+      ),
+      body: const Text('Hello world'),
+    );
+  }
+}
+
+Future<bool> showLogOutDialog(BuildContext context) {
+  return showDialog<bool>(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text('Log out'),
+        content: const Text("Area you sure you want to Log out?"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+            child: const Text("Log out"),
+          ),
+        ],
+      );
+    },
+  ).then(
+    (value) => value ?? false,
+  );
 }
