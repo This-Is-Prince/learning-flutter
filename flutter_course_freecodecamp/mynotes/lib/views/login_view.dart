@@ -26,6 +26,10 @@ class _LoginViewState extends State<LoginView> {
     super.dispose();
   }
 
+  void goToHome() {
+    Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,12 +75,12 @@ class _LoginViewState extends State<LoginView> {
                     .signInWithEmailAndPassword(
                         email: email, password: password);
                 debugPrint("\n\n${userCredential.toString()}");
+                goToHome();
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'user-not-found') {
-                  debugPrint("User not found");
+                  showLoginErrorDialog(context, "Invalid Email");
                 } else if (e.code == 'wrong-password') {
-                  debugPrint("Something");
-                  debugPrint(e.code);
+                  showLoginErrorDialog(context, "Wrong Password");
                 }
               }
             },
@@ -99,4 +103,20 @@ class _LoginViewState extends State<LoginView> {
       ),
     );
   }
+}
+
+Future<bool> showLoginErrorDialog(BuildContext context, String title) {
+  return showDialog<bool>(
+    context: context,
+    builder: (context) {
+      return Dialog(
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          child: Text(title),
+        ),
+      );
+    },
+  ).then(
+    (value) => value ?? false,
+  );
 }
