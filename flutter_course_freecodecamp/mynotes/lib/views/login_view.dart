@@ -27,7 +27,10 @@ class _LoginViewState extends State<LoginView> {
   }
 
   void goToHome() {
-    Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      '/notes/',
+      (route) => false,
+    );
   }
 
   @override
@@ -71,9 +74,11 @@ class _LoginViewState extends State<LoginView> {
               final email = _email.text;
               final password = _password.text;
               try {
-                final userCredential = await FirebaseAuth.instance
-                    .signInWithEmailAndPassword(
-                        email: email, password: password);
+                final userCredential =
+                    await FirebaseAuth.instance.signInWithEmailAndPassword(
+                  email: email,
+                  password: password,
+                );
                 debugPrint("\n\n${userCredential.toString()}");
                 goToHome();
               } on FirebaseAuthException catch (e) {
