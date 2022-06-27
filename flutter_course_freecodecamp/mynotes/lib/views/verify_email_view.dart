@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:mynotes/utils/routes.dart';
 
 class VerifyEmailView extends StatefulWidget {
   const VerifyEmailView({Key? key}) : super(key: key);
@@ -9,6 +10,13 @@ class VerifyEmailView extends StatefulWidget {
 }
 
 class _VerifyEmailViewState extends State<VerifyEmailView> {
+  void goToRegister() {
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      Routes.register.toString(),
+      (route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,8 +28,17 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
         children: [
           Container(
             alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(horizontal: 25),
             margin: const EdgeInsets.only(bottom: 10),
-            child: const Text("Please verify your email address:"),
+            child: const Text(
+                "We've sent you a email verification. Please open it to verify your account."),
+          ),
+          Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(horizontal: 25),
+            margin: const EdgeInsets.only(bottom: 10),
+            child: const Text(
+                "If you have't received a verification email yet, press the button below"),
           ),
           Container(
             alignment: Alignment.center,
@@ -35,6 +52,20 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                 await user?.sendEmailVerification();
               },
               child: const Text("Send email verification"),
+            ),
+          ),
+          Container(
+            alignment: Alignment.center,
+            child: TextButton(
+              style: TextButton.styleFrom(
+                primary: Colors.white,
+                backgroundColor: Colors.blue,
+              ),
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
+                goToRegister();
+              },
+              child: const Text("Restart"),
             ),
           ),
         ],

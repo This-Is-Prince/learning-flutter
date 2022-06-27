@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
         Routes.login.toString(): (context) => const LoginView(),
         Routes.register.toString(): (context) => const RegisterView(),
         Routes.notes.toString(): (context) => const NotesView(),
+        Routes.verifyEmail.toString(): (context) => const VerifyEmailView(),
       },
     );
   }

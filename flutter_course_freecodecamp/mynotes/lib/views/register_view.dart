@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/utils/routes.dart';
+import 'package:mynotes/utils/show_error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({Key? key}) : super(key: key);
@@ -18,6 +19,12 @@ class _RegisterViewState extends State<RegisterView> {
     _email = TextEditingController();
     _password = TextEditingController();
     super.initState();
+  }
+
+  void goToVerifyEmail() {
+    Navigator.of(context).pushNamed(
+      Routes.verifyEmail.toString(),
+    );
   }
 
   @override
@@ -67,25 +74,46 @@ class _RegisterViewState extends State<RegisterView> {
               final email = _email.text;
               final password = _password.text;
               try {
-                final userCredential = await FirebaseAuth.instance
-                    .createUserWithEmailAndPassword(
-                        email: email, password: password);
+                final userCredential =
+                    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                  email: email,
+                  password: password,
+                );
+                final user = FirebaseAuth.instance.currentUser;
+                await user?.sendEmailVerification();
+                goToVerifyEmail();
                 debugPrint("\n\n$userCredential.toString()");
               } on FirebaseAuthException catch (e) {
                 switch (e.code) {
                   case 'email-already-in-use':
-                    debugPrint("Email is already in use");
+                    await showErrorDialog(
+                      context,
+                      "Email is already in use",
+                    );
                     break;
                   case 'invalid-email':
-                    debugPrint("Invalid Email Entered");
+                    await showErrorDialog(
+                      context,
+                      "This is an invalid email address",
+                    );
                     break;
                   case 'weak-password':
-                    debugPrint("Weak Password");
+                    await showErrorDialog(
+                      context,
+                      "Weak password",
+                    );
                     break;
                   default:
-                    debugPrint("Something happen");
-                    debugPrint(e.code);
+                    await showErrorDialog(
+                      context,
+                      "Error: ${e.code}",
+                    );
                 }
+              } catch (e) {
+                await showErrorDialog(
+                  context,
+                  e.toString(),
+                );
               }
             },
             child: const Text("Register"),
