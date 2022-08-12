@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "797287087895",
+    "project_id": "this-is-prince-mynotes",
+    "storage_bucket": "this-is-prince-mynotes.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:797287087895:android:67a88f4c0a2311d72dc152",
+        "android_client_info": {
+          "package_name": "com.thisisprince.mynotes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "797287087895-993rpu496rjgahmgq8tf9dbrlh2d3t6v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3YRBoROns5OXkDh_Q53gZEhwmjoKjxMU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "797287087895-993rpu496rjgahmgq8tf9dbrlh2d3t6v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
